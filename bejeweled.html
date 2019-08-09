@@ -1,0 +1,879 @@
+<html>
+<head>
+	<style>
+	*{padding: 0; margin:0;}
+	canvas{ background: #eee; display: block; margin: 0 auto;}
+	</style>
+</head>
+
+<body>
+<canvas id= "myCanvas" width="1200" height="600"></canvas>
+<script type="text/javascript">
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+canvas.addEventListener("mousedown", getPosition, false);
+canvas.addEventListener("mouseup", getPosition2, false);
+document.addEventListener("mousemove", mouseMoveHandler, false);
+///Bedazzling Multiplayer
+var x = 0;
+var y = 0;
+var qButton = false;
+var wButton = false;
+var eButton = false;
+var rButton = false;
+var tButton = false;
+var yButton = false;
+var uButton = false;
+var iButton = false;
+var oButton = false;
+var pButton = false;
+var aButton = false;
+var sButton = false;
+var dButton = false;
+var fButton = false;
+var gButton = false;
+var hButton = false;
+var jButton = false;
+var kButton = false;
+var lButton = false;
+var zButton = false;
+var xButton = false;
+var cButton = false;
+var vButton = false;
+var bButton = false;
+var nButton = false;
+var mButton = false;
+var shiftButton = false;
+var enterButton = false;
+var backButton = false;
+var canPressAgain = true;
+var mouseIsDown = false;
+var wordString = "";
+var needInitialValues = true;
+var gameScore = 0;
+var square = new Image();
+square.src = "blueRect.png";
+var circle = new Image();
+circle.src = "orangeCirc.png";
+var triangle = new Image();
+triangle.src = "yellowTriag.png";
+var diamond = new Image();
+diamond.src = "purpleDiamond.png";
+
+var fallingShapes = [];
+function fallingShape(x, y, cellNum, distanceToFall, destinationRow, destinationCol)
+{
+	this.x = x;
+	this.y = y;
+	this.num = cellNum;
+	this.distance = distanceToFall;
+	this.row = destinationRow;
+	this.col = destinationCol;
+}
+
+var boardShapes = [];
+for(var a = 0; a < 8; a++)
+{
+	boardShapes[a] = [];
+}
+
+
+function findMatches()
+{
+loop1:
+	for(var a = 7; a >= 0; a--)
+		{
+		loop2:
+			for(var b = 7; b >= 0; b--)
+			{
+				var total1, total2, total3, total4, total5, total6;
+				//typeof array[index] != 'undefined'
+				if(a >= 4)
+				{
+				total3 = boardShapes[a][b] + boardShapes[a-1][b] + boardShapes[a-2][b] + boardShapes[a-3][b] + boardShapes[a-4][b];
+					if(total3 == 50 || total3 == 505 || total3 == 5015 || total3 == 50025)
+					{
+						console.log("Match found.");
+						console.log("" + a + "  " + b +  "  =" + boardShapes[a][b]);
+						console.log("" + (a-1) + "  " + b  + "  =" + boardShapes[a-1][b]);
+						console.log("" + (a-2) + "  " + b + "  =" + boardShapes[a-2][b]);
+						console.log("" + (a-3) + "  " + b + "  =" + boardShapes[a-3][b]);
+						console.log("" + (a-4) + "  " + b + "  =" + boardShapes[a-4][b]);
+						boardShapes[a][b] = 0;
+						boardShapes[a - 1][b] = 0;
+						boardShapes[a - 2][b] = 0;
+						boardShapes[a - 3][b] = 0;
+						boardShapes[a - 4][b] = 0;
+						///All up and down
+//fallingShape(x, y, cellNum, distanceToFall, destinationRow, destinationCol)
+//ctx.drawImage(square, 40 + (a*50), 100 + (b*50));
+						var amountAbove = a + 1 - 5;
+						for(var c = amountAbove - 1; c > 0; c--)
+						{
+							var oX = 40 + (a*50);
+							var oY = 100 + (c*50);
+							var nX = 40 + (a*50);
+							var nY = 100 + (b*50) + (c*50);
+							var cN = boardShapes[c][b];
+							var dTF = 250;
+							var dRow = c + 5;
+							var dCol = b;
+							console.log("Source row: " + c + "   source col: " + b);
+							var shape = new fallingShape(oX, oY, cN, dTF, dRow, dCol);
+							console.log(shape);
+							fallingShapes.push();
+						}
+						break loop1;
+					}
+				}
+				if(b >= 4)
+				{
+				total3 = boardShapes[a][b] + boardShapes[a][b-1] + boardShapes[a][b-2] + boardShapes[a][b-3] + boardShapes[a][b-4];
+					if(total3 == 50 || total3 == 505 || total3 == 5015 || total3 == 50025)
+					{
+						console.log("Match found.");
+						console.log("" + a + "  " + b +  "  =" + boardShapes[a][b]);
+						console.log("" + a + "  " + (b-1) + "  =" + boardShapes[a][b-1]);
+						console.log("" + a + "  " + (b-2) + "  =" + boardShapes[a][b-2]);
+						console.log("" + a + "  " + (b-3) + "  =" + boardShapes[a][b-3]);
+						console.log("" + a + "  " + (b-4) + "  =" + boardShapes[a][b-4]);
+						boardShapes[a][b] = 0;
+						boardShapes[a][b-1] = 0;
+						boardShapes[a][b-2] = 0;
+						boardShapes[a][b-3] = 0;
+						boardShapes[a][b-4] = 0;
+						break loop1;
+					}
+				}
+				
+				if(a >= 3)
+				{
+				total2 = boardShapes[a][b] + boardShapes[a-1][b] + boardShapes[a-2][b] + boardShapes[a-3][b];
+				if(total2 == 40 || total2 == 404 || total2 == 4012 || total2 == 40020)
+				{
+					console.log("Match found.");
+						console.log("" + a + "  " + b +  "  =" + boardShapes[a][b]);
+						console.log("" + (a-1) + "  " + b  + "  =" + boardShapes[a-1][b]);
+						console.log("" + (a-2) + "  " + b + "  =" + boardShapes[a-2][b]);
+						console.log("" + (a-3) + "  " + b + "  =" + boardShapes[a-3][b]);
+						
+					boardShapes[a][b] = 0;
+					boardShapes[a - 1][b] = 0;
+					boardShapes[a - 2][b] = 0;
+					boardShapes[a-3][b] = 0;
+					break loop1;
+				}
+				}
+				if(b >= 3)
+				{
+				total2 = boardShapes[a][b] + boardShapes[a][b-1] + boardShapes[a][b-2] + boardShapes[a][b-3];
+					if(total2 == 40 || total2 == 404 || total2 == 4012 || total2 == 40020)
+					{
+						console.log("Match found.");
+						console.log("" + a + "  " + b +  "  =" + boardShapes[a][b]);
+						console.log("" + a + "  " + (b-1) + "  =" + boardShapes[a][b-1]);
+						console.log("" + a + "  " + (b-2) + "  =" + boardShapes[a][b-2]);
+						console.log("" + a + "  " + (b-3) + "  =" + boardShapes[a][b-3]);
+						
+						boardShapes[a][b] = 0;
+						boardShapes[a][b-1] = 0;
+						boardShapes[a][b-2] = 0;
+						boardShapes[a][b-3] = 0;
+						console.log(boardShapes);
+						break loop1;
+					}
+				}
+				
+				if(a >= 2){
+				total1 = boardShapes[a][b] + boardShapes[a-1][b] + boardShapes[a-2][b];
+				if(total1 == 30 || total1 == 303 || total1 == 3009 || total1 == 30015)
+				{
+					console.log("Match found.");
+						console.log("" + a + "  " + b +  "  =" + boardShapes[a][b]);
+						console.log("" + (a-1) + "  " + b  + "  =" + boardShapes[a-1][b]);
+						console.log("" + (a-2) + "  " + b + "  =" + boardShapes[a-2][b]);
+						
+					boardShapes[a][b] = 0;
+					console.log("changed this value to " + boardShapes[a][b]);
+					boardShapes[a - 1][b] = 0;
+					boardShapes[a - 2][b] = 0;
+					break loop1;
+				}
+				}
+				
+				if(b >= 2)
+				{
+				total1 = boardShapes[a][b] + boardShapes[a][b-1] + boardShapes[a][b-2];
+					if(total1 == 30 || total1 == 303 || total1 == 3009 || total1 == 30015)
+					{
+					console.log("Match found.");
+						console.log("" + a + "  " + b +  "  =" + boardShapes[a][b]);
+						console.log("" + a + "  " + (b-1) + "  =" + boardShapes[a][b-1]);
+						console.log("" + a + "  " + (b-2) + "  =" + boardShapes[a][b-2]);
+						
+						boardShapes[a][b] = 0;
+						boardShapes[a][b-1] = 0;
+						boardShapes[a][b-2] = 0;
+						break loop1;
+					}
+				}
+				
+				
+			}
+			
+		}
+}
+
+function drawBoard(boardShapes2)
+{
+	for(var a = 0; a <= 8; a++)
+	{
+		line(40 + (a*50), 100, 40 + (a*50), 500);
+		line(40, 100 + (a*50), 440, 100 + (a*50));
+	}
+	
+	for(var a = 0; a < 8; a++)
+		{
+			for(var b = 0; b < 8; b++)
+			{
+				///sctd
+				if(boardShapes2[a][b] === 10)
+				{
+					ctx.drawImage(square, 40 + (a*50), 100 + (b*50));
+				}
+				if(boardShapes2[a][b] === 101)
+				{
+					ctx.drawImage(circle, 40 + (a*50), 100 + (b*50));
+				}
+				if(boardShapes2[a][b] === 1003)
+				{
+					ctx.drawImage(triangle, 40 + (a*50), 100 + (b*50));
+				}
+				if(boardShapes2[a][b] === 10005)
+				{
+					ctx.drawImage(diamond, 40 + (a*50), 100 + (b*50));
+				}
+			}
+			
+		}
+	
+}
+
+function drawFallingShapes()
+{
+for(var a = 0; a < fallingShapes.length; a++)
+{
+	fallingShapes[a].distance -= 1;
+	fallingShapes[a].y += 1;
+	if(fallingShapes[a].distance >= 0)
+	{
+				if(fallingShapes[a].num === 10)
+				{
+					ctx.drawImage(square, fallingShapes[a].x, fallingShapes[a].y);
+				}
+				if(fallingShapes[a].num === 101)
+				{
+					ctx.drawImage(circle,fallingShapes[a].x, fallingShapes[a].y);
+				}
+				if(fallingShapes[a].num === 1003)
+				{
+					ctx.drawImage(triangle, fallingShapes[a].x, fallingShapes[a].y);
+				}
+				if(fallingShapes[a].num === 10005)
+				{
+					ctx.drawImage(diamond, fallingShapes[a].x, fallingShapes[a].y);
+				}
+	}
+	else
+	{
+	
+	}
+}
+}
+
+function populateBoard()
+{
+	if(needInitialValues)
+	{
+		for(var a = 0; a < 8; a++)
+		{
+			for(var b = 0; b < 8; b++)
+			{
+				var randomNum = Math.floor(Math.random() * 4);
+				var shapeNum = 0;
+				if(randomNum == 0)
+				{
+					shapeNum = 10;
+				}
+				else if(randomNum == 1)
+				{
+					shapeNum = 101;
+				}
+				else if(randomNum == 2)
+				{
+					shapeNum = 1003;
+				}
+				else
+				{
+					shapeNum = 10005;
+				}
+				boardShapes[a][b]= shapeNum;
+			}
+		}
+		needInitialValues = false;
+	}
+}
+
+function mouseMoveHandler(e) {
+    x = e.clientX - canvas.offsetLeft;
+    y = e.clientY - canvas.offsetTop;
+}
+
+function getPosition2(event){
+	mouseIsDown = false;
+}
+
+function getPosition(event)
+{
+  x = event.x - canvas.offsetLeft;
+  y = event.y - canvas.offsetTop;
+	mouseIsDown = true;
+	//console.log("Mouse is pressed");
+  //alert("x:" + x + " y:" + y);
+}
+
+function line(x1, y1, x2, y2, col = "black")
+{
+ctx.beginPath();
+ctx.strokeStyle = col;
+ctx.moveTo(x1, y1);
+ctx.lineTo(x2, y2);
+ctx.stroke();
+ctx.closePath();
+}
+
+function keyDownHandler(e){
+	if(e.keyCode == 65 && canPressAgain)
+	{
+	aButton = true;
+	if(shiftButton)
+	{
+		word.push("A");
+	}
+	else{
+	word.push("a");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 66 && canPressAgain)
+	{
+	bButton = true;
+	if(shiftButton)
+	{
+		word.push("B");
+	}
+	else{
+	word.push("b");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 67 && canPressAgain)
+	{
+	cButton = true;
+	if(shiftButton)
+	{
+		word.push("C");
+	}
+	else{
+	word.push("c");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 68 && canPressAgain)
+	{
+	dButton = true;
+	if(shiftButton)
+	{
+		word.push("D");
+	}
+	else{
+	word.push("d");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 69 && canPressAgain)
+	{
+	eButton = true;
+	if(shiftButton)
+	{
+		word.push("E");
+	}
+	else{
+	word.push("e");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 70 && canPressAgain)
+	{
+	fButton = true;
+	if(shiftButton)
+	{
+		word.push("F");
+	}
+	else{
+	word.push("f");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 71 && canPressAgain)
+	{
+	gButton = true;
+	if(shiftButton)
+	{
+		word.push("G");
+	}
+	else{
+	word.push("g");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 72 && canPressAgain)
+	{
+	hButton = true;
+	if(shiftButton)
+	{
+		word.push("H");
+	}
+	else{
+	word.push("h");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 73 && canPressAgain)
+	{
+	iButton = true;
+	if(shiftButton)
+	{
+		word.push("I");
+	}
+	else{
+	word.push("i");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 74 && canPressAgain)
+	{
+	jButton = true;
+	if(shiftButton)
+	{
+		word.push("J");
+	}
+	else{
+	word.push("j");
+	}
+	canPressAgain = false;
+	}
+else if(e.keyCode == 75 && canPressAgain)
+	{
+	kButton = true;
+	if(shiftButton)
+	{
+		word.push("K");
+	}
+	else{
+	word.push("k");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 76 && canPressAgain)
+	{
+	lButton = true;
+	if(shiftButton)
+	{
+		word.push("L");
+	}
+	else{
+	word.push("l");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 77 && canPressAgain)
+	{
+	mButton = true;
+	if(shiftButton)
+	{
+		word.push("M");
+	}
+	else{
+	word.push("m");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 78 && canPressAgain)
+	{
+	nButton = true;
+	if(shiftButton)
+	{
+		word.push("N");
+	}
+	else{
+	word.push("n");
+	}
+	canPressAgain = false;
+	}	
+else if(e.keyCode == 79 && canPressAgain)
+	{
+	oButton = true;
+	if(shiftButton)
+	{
+		word.push("O");
+	}
+	else{
+	word.push("o");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 80 && canPressAgain)
+	{
+	pButton = true;
+	if(shiftButton)
+	{
+		word.push("P");
+	}
+	else{
+	word.push("p");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 81 && canPressAgain)
+	{
+	qButton = true;
+	if(shiftButton)
+	{
+		word.push("Q");
+	}
+	else{
+	word.push("q");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 82 && canPressAgain)
+	{
+	rButton = true;
+	if(shiftButton)
+	{
+		word.push("R");
+	}
+	else{
+	word.push("r");
+	}
+	canPressAgain = false;
+	}	
+else if(e.keyCode == 83 && canPressAgain)
+	{
+	sButton = true;
+	if(shiftButton)
+	{
+		word.push("S");
+	}
+	else{
+	word.push("s");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 84 && canPressAgain)
+	{
+	tButton = true;
+	if(shiftButton)
+	{
+		word.push("T");
+	}
+	else{
+	word.push("t");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 85 && canPressAgain)
+	{
+	uButton = true;
+	if(shiftButton)
+	{
+		word.push("U");
+	}
+	else{
+	word.push("u");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 86 && canPressAgain)
+	{
+	vButton = true;
+	if(shiftButton)
+	{
+		word.push("V");
+	}
+	else{
+	word.push("v");
+	}
+	canPressAgain = false;
+	}	
+else if(e.keyCode == 87 && canPressAgain)
+	{
+	wButton = true;
+	if(shiftButton)
+	{
+		word.push("W");
+	}
+	else{
+	word.push("w");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 88 && canPressAgain)
+	{
+	xButton = true;
+	if(shiftButton)
+	{
+		word.push("X");
+	}
+	else{
+	word.push("x");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 89 && canPressAgain)
+	{
+	yButton = true;
+	if(shiftButton)
+	{
+		word.push("Y");
+	}
+	else{
+	word.push("y");
+	}
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 90 && canPressAgain)
+	{
+	zButton = true;
+	if(shiftButton)
+	{
+		word.push("Z");
+	}
+	else{
+	word.push("z");
+	}
+	canPressAgain = false;
+	}
+	
+	///This is for shift
+	else if(e.keyCode == 16 && canPressAgain)
+	{
+	shiftButton = true;
+	//word.push("z");
+	//canPressAgain = false;
+	}
+	
+	else if(e.keyCode == 13 && canPressAgain)
+	{
+	///enter
+	enterButton = true;
+	<!-- for(var a = 0; a < fallingWords.length; a++) -->
+	<!-- { -->
+		<!-- if(fallingWords[a].length == wordString.length && wordString == fallingWords[a]) -->
+		<!-- { -->
+			<!-- score++; -->
+			<!-- fallingWords.splice(a,1); -->
+			<!-- wordString = ""; -->
+			<!-- word.length = 0; -->
+			<!-- console.log("WordString is : " + wordString); -->
+			<!-- console.log("Word length is : " + word.length); -->
+		<!-- } -->
+	<!-- } -->
+	canPressAgain = false;
+	}
+	else if(e.keyCode == 8)
+	{
+	///backspace
+	backButton = true;
+	word.pop();
+	canPressAgain = false;
+	}
+
+}
+function keyUpHandler(e){
+	if(e.keyCode == 65)
+	{
+	aButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 16)
+	{
+	shiftButton = false;
+	//canPressAgain = false;
+	}
+	else if(e.keyCode == 66)
+	{
+	bButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 67)
+	{
+	cButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 68)
+	{
+	dButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 69)
+	{
+	eButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 70)
+	{
+	fButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 71)
+	{
+	gButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 72)
+	{
+	hButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 73)
+	{
+	iButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 74)
+	{
+	jButton = false;
+	canPressAgain = true;
+	}
+else if(e.keyCode == 75)
+	{
+	kButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 76)
+	{
+	lButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 77)
+	{
+	mButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 78)
+	{
+	nButton = false;
+	canPressAgain = true;
+	}	
+else if(e.keyCode == 79)
+	{
+	oButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 80)
+	{
+	pButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 81)
+	{
+	qButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 82)
+	{
+	rButton = false;
+	canPressAgain = true;
+	}	
+else if(e.keyCode == 83)
+	{
+	sButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 84)
+	{
+	tButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 85)
+	{
+	uButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 86)
+	{
+	vButton = false;
+	canPressAgain = true;
+	}	
+else if(e.keyCode == 87)
+	{
+	wButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 88)
+	{
+	xButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 89)
+	{
+	yButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 90)
+	{
+	zButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 13)
+	{
+	///enter
+	enterButton = false;
+	canPressAgain = true;
+	}
+	else if(e.keyCode == 8)
+	{
+	///backspace
+	backButton = false;
+	canPressAgain = true;
+	}
+}
+
+function createWord()
+{
+	wordString = word.join('');
+}
+
+function refreshTyping()
+{
+	canPressAgain = true;
+}
+
+//drawBoard();
+function draw()
+{
+ctx.clearRect(0,0,1200,700);
+populateBoard();
+drawBoard(boardShapes);
+findMatches();
+drawFallingShapes();
+}
+setInterval(draw, 2);
+setInterval(refreshTyping, 5);
+</script>
+</body>
+</html>
