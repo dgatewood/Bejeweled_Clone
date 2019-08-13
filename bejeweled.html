@@ -109,15 +109,15 @@ loop1:
 						///All up and down
 //fallingShape(x, y, cellNum, distanceToFall, destinationRow, destinationCol)
 //ctx.drawImage(square, 40 + (a*50), 100 + (b*50));
-						var amountAbove = a + 1 - 5;
-						for(var c = amountAbove - 1; c > 0; c--)
+						var amountAbove = a -1;
+						for(var c = amountAbove; c > 0; c--)
 						{
 							var oX = 40 + (a*50);
 							var oY = 100 + (c*50);
 							var nX = 40 + (a*50);
 							var nY = 100 + (b*50) + (c*50);
-							var cN = boardShapes[c][b];
-							var dTF = 250;
+							var cN = boardShapes[c-1][b];
+							var dTF = 50*c;
 							var dRow = c + 5;
 							var dCol = b;
 							console.log("Source row: " + c + "   source col: " + b);
